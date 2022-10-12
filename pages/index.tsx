@@ -15,6 +15,8 @@ const HomePage = ({
 };
 
 export const getStaticProps: GetStaticProps = async () => {
+  console.log('(Re-)Generating...');
+
   // get the file path for dummy-backend.json file
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
 
