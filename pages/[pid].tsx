@@ -15,6 +15,10 @@ const ProductDetailPage = ({
   title,
   description,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  if (!id) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
       <h1>{title}</h1>
@@ -54,7 +58,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths: productPaths,
-    fallback: false,
+    fallback: true,
   };
 };
 
