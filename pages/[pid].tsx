@@ -1,10 +1,11 @@
 import fs from 'fs/promises';
+import path from 'path';
+
 import {
   GetStaticPropsResult,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import path from 'path';
 import { Product } from '../types';
 
 type PageParams = {
@@ -37,7 +38,8 @@ export const getStaticProps = async ({
 
   // get and parse our dummy data
   const jsonData = await fs.readFile(filePath);
-  const products = JSON.parse(jsonData.toString());
+  const data = JSON.parse(jsonData.toString());
+  const { products } = data;
 
   const product = products.find(({ id }) => id === pid);
   const { id, title, description } = product;
@@ -48,6 +50,17 @@ export const getStaticProps = async ({
       title,
       description,
     },
+  };
+};
+
+export const getStaticPaths = () => {
+  return {
+    paths: [
+      { params: { pid: 'p1' } },
+      { params: { pid: 'p2' } },
+      { params: { pid: 'p3' } },
+    ],
+    fallback: false,
   };
 };
 

@@ -24,7 +24,7 @@ export const getStaticProps = async () => {
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData.toString());
 
-  if (data) {
+  if (!data) {
     return {
       redirect: {
         destination: '/not-found',
