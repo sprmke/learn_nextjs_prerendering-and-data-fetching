@@ -39,6 +39,13 @@ export const getStaticProps = async ({
   const products = await getProducts();
 
   const product = products.find(({ id }) => id === pid);
+
+  if (!product) {
+    return {
+      notFound: true,
+    };
+  }
+
   const { id, title, description } = product;
 
   return {
