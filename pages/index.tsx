@@ -1,4 +1,4 @@
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -14,17 +14,8 @@ const HomePage = ({
   );
 };
 
-type PageParams = {
-  id: string;
-};
-
-export const getStaticProps = async (
-  context: GetStaticPropsContext<PageParams>
-) => {
+export const getStaticProps = async () => {
   console.log('(Re-)Generating...');
-
-  const { params, preview, previewData, locale, locales, defaultLocale } =
-    context;
 
   // get the file path for dummy-backend.json file
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
