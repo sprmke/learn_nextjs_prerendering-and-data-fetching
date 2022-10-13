@@ -1,13 +1,15 @@
-import { InferGetStaticPropsType } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
+import { Product } from '../types';
 
-const HomePage = ({
-  products,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const HomePage = ({ products }: { products: Product[] }) => {
+  if (!products) {
+    return <p>No Products Found</p>;
+  }
+
   return (
     <ul>
-      {products.map(({ id, title }) => (
+      {products?.map(({ id, title }) => (
         <li key={id}>{title}</li>
       ))}
     </ul>
@@ -23,6 +25,7 @@ export const getStaticProps = async () => {
   // get and parse our dummy data
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData.toString());
+  const { products = [] } = data;
 
   if (!data) {
     return {
@@ -38,7 +41,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      products: data.products,
+      products,
     },
     revalidate: 10,
   };
