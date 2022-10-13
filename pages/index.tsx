@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import Link from 'next/link';
 import path from 'path';
 import { Product } from '../types';
 
@@ -10,7 +11,9 @@ const HomePage = ({ products }: { products: Product[] }) => {
   return (
     <ul>
       {products?.map(({ id, title }) => (
-        <li key={id}>{title}</li>
+        <li key={id}>
+          <Link href={id}>{title}</Link>
+        </li>
       ))}
     </ul>
   );
