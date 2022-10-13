@@ -1,11 +1,9 @@
-import fs from 'fs/promises';
-import path from 'path';
-
 import {
   GetStaticPropsResult,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
+import { getProducts } from '../lib/products';
 import { Product } from '../types';
 
 type PageParams = {
@@ -33,13 +31,8 @@ export const getStaticProps = async ({
   // get dynamic page id
   const { pid } = params;
 
-  // get the file path for dummy-backend.json file
-  const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
-
-  // get and parse our dummy data
-  const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData.toString());
-  const { products } = data;
+  // get products
+  const products = await getProducts();
 
   const product = products.find(({ id }) => id === pid);
   const { id, title, description } = product;
@@ -53,13 +46,14 @@ export const getStaticProps = async ({
   };
 };
 
-export const getStaticPaths = () => {
+export const getStaticPaths = async () => {
+  const products = await getProducts();
+  const productPaths = products.map((product: Product) => ({
+    params: { pid: product.id },
+  }));
+
   return {
-    paths: [
-      { params: { pid: 'p1' } },
-      { params: { pid: 'p2' } },
-      { params: { pid: 'p3' } },
-    ],
+    paths: productPaths,
     fallback: false,
   };
 };
