@@ -1,10 +1,5 @@
-export interface Event {
+export type Product = {
   id: string;
   title: string;
-  description?: string;
-  location: string;
-  date: string;
-  image: string;
-  imageAlt?: string;
-  isFeatured?: boolean;
-}
+  description: string;
+};
