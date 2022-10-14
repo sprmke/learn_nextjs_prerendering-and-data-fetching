@@ -3,8 +3,8 @@ import {
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import { getProducts } from '../lib/products';
-import { Product } from '../types';
+import { getProducts } from '../../lib/products';
+import { Product } from '../../types';
 
 type PageParams = {
   pid: string;
