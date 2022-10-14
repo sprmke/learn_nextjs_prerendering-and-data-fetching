@@ -1,35 +1,54 @@
 import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 const OrdersPage = () => {
-  const [orders, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [orders, setOrders] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const getOrders = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
-      );
+  // const getOrders = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
+  //     );
 
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Something went wrong!');
+  //     }
 
-      const data = await response.json();
-      const orders = Object.values(data);
-      setOrders(orders);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+  //     const data = await response.json();
+  //     const orders = Object.values(data);
+  //     setOrders(orders);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getOrders();
+  // }, []);
+
+  const fetchOrders = async () => {
+    const response = await fetch(
+      'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
+    );
+    const data = await response.json();
+    const orders = Object.values(data);
+    return orders;
   };
 
-  useEffect(() => {
-    getOrders();
-  }, []);
+  const { data: orders, error } = useSWR(
+    'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json',
+    fetchOrders
+  );
 
-  if (isLoading) {
+  if (error) {
+    return <p>Failed to load orders.</p>;
+  }
+
+  if (!orders) {
     return <p>Loading...</p>;
   }
 
