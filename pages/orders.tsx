@@ -1,45 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import { GetStaticProps } from 'next';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 
-const OrdersPage = () => {
-  // const [orders, setOrders] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
+type Order = {
+  id: string;
+  name: string;
+  amount: string;
+  price: string;
+};
 
-  // const getOrders = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetch(
-  //       'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
-  //     );
+type Orders = {
+  user: {
+    id: string;
+    name: string;
+    city: string;
+    postal: string;
+  };
+  orderItems: Order[];
+};
 
-  //     if (!response.ok) {
-  //       throw new Error('Something went wrong!');
-  //     }
+type OrdersPageProps = {
+  orders: Orders[];
+};
 
-  //     const data = await response.json();
-  //     const orders = Object.values(data);
-  //     setOrders(orders);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+const OrdersPage = ({ orders: initialOrders }: OrdersPageProps) => {
+  const [orders, setOrders] = useState(initialOrders);
 
-  // useEffect(() => {
-  //   getOrders();
-  // }, []);
+  const fetchOrders = async (url: string) => {
+    const response = await fetch(url);
+    const data: { orders: Orders } = await response.json();
 
-  const fetchOrders = async () => {
-    const response = await fetch(
-      'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
-    );
-    const data = await response.json();
     const orders = Object.values(data);
+
+    setOrders(orders);
+
     return orders;
   };
 
-  const { data: orders, error } = useSWR(
+  const { data: ordersList, error } = useSWR(
     'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json',
     fetchOrders
   );
@@ -48,7 +46,7 @@ const OrdersPage = () => {
     return <p>Failed to load orders.</p>;
   }
 
-  if (!orders) {
+  if (!ordersList && !orders) {
     return <p>Loading...</p>;
   }
 
@@ -81,3 +79,17 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await fetch(
+    'https://react-http-be6eb-default-rtdb.firebaseio.com/orders.json'
+  );
+  const data = await response.json();
+  const orders = Object.values(data);
+
+  return {
+    props: {
+      orders,
+    },
+  };
+};
