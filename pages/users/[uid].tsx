@@ -11,6 +11,8 @@ export default UserIdPage;
 export const getServerSideProps = ({ params }: GetServerSidePropsContext) => {
   const { uid: userId } = params;
 
+  console.log('Server-side code!');
+
   return {
     props: {
       id: `userid-${userId}`,
